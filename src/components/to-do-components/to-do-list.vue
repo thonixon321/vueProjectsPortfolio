@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <incomplete-tasks />
     <add-to-do />
     <completed-tasks />

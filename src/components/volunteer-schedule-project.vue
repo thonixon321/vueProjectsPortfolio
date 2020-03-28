@@ -16,6 +16,8 @@
 
 <script>
 
+  import { mapGetters } from 'vuex';
+  import volunteerStore from '../store/modules/volunteerMod';
 
   export default {
 
@@ -30,6 +32,9 @@
 
 
     computed: {
+      ...mapGetters({
+        volunteers: 'volunteerStore/volunteers'
+      })
 
     },
 
@@ -42,6 +47,9 @@
 
 
     methods: {
+      registerStores() {
+        this.$store.registerModule('volunteerStore', volunteerStore);
+      }
 
 
     },
@@ -55,7 +63,7 @@
 
 
     mounted: function() {
-
+      this.registerStores();
     }
   }
 
