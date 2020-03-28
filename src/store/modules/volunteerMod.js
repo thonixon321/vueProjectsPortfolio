@@ -8,7 +8,11 @@ export default(
     namespaced: true,
     //data goes here
     state: {
-
+      volunteers: [
+        {
+          name: 'Tommy'
+        }
+      ]
     },
 
     //retrieve data with these methods
@@ -25,10 +29,10 @@ export default(
     //set/update/add data with these methods (step 2)
     mutations: {
     initialiseStore(state) {
-        if(localStorage.getItem('store')) {
+        if(localStorage.getItem('volunteerStore')) {
           // Replace the state object with the stored item
           this.replaceState(
-            Object.assign(state, JSON.parse(localStorage.getItem('store')))
+            Object.assign(state, JSON.parse(localStorage.getItem('volunteerStore')))
           );
 
         }

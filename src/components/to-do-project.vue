@@ -61,6 +61,10 @@
         this.$store.registerModule('toDoStore', toDoStore);
       },
 
+      unregisterStores() {
+        this.$store.unregisterModule('toDoStore');
+      },
+
       ...mapActions({
         callAddToDo: 'toDoStore/callAddToDo'
       }),
@@ -71,7 +75,6 @@
 
       clearStorage: function() {
         window.localStorage.clear();
-
       },
 
       fetchTodos: function() {
@@ -107,6 +110,10 @@
       if(this.allTodos.length == 0) {
         this.fetchTodos();
       }
+    },
+
+    beforeDestroy() {
+      this.unregisterStores();
     },
 
     components: {
