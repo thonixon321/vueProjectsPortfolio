@@ -59,6 +59,7 @@
     methods: {
       registerStores() {
         this.$store.registerModule('toDoStore', toDoStore);
+
       },
 
       unregisterStores() {
@@ -66,7 +67,7 @@
       },
 
       ...mapActions({
-        callAddToDo: 'toDoStore/callAddToDo'
+        callLoadToDos: 'toDoStore/callLoadToDos'
       }),
 
       changeTitle: function(passedTitle) {
@@ -82,17 +83,26 @@
             url: 'https://my-json-server.typicode.com/thonixon321/tasksDB/tasks',
             method: 'GET',
             callBack: this.fetchTodosResponse
-          };
-
-          this.sendAxios({}, settingsObj);
         },
+        locallyStoredState;
+        //check if there is data in the local storage, use that if so
+        if(localStorage.getItem('toDoStore')) {
+          if (this.allTodos.length === 0) {
+            locallyStoredState = JSON.parse(localStorage.getItem('toDoStore'));
+            this.callLoadToDos(locallyStoredState.toDoStore.todo);
+            // Replace the state object with the stored items
+          }
+        }
+        else{
+          //when no data is found in local storage, call the DB (mock DB)
+          this.sendAxios({}, settingsObj);
+        }
+
+      },
 
       fetchTodosResponse: function(res) {
         console.log(res.data);
-
-        for (var i=0; i < res.data.length; i++) {
-          this.callAddToDo(res.data[i]);
-        }
+        this.callLoadToDos(res.data);
 
       },
 
@@ -104,12 +114,13 @@
 
     created: function() {
       this.registerStores();
-      console.log(this.$store);
-      //don't want to keep adding the todos from the database
-      //if they are already in local storage
-      if(this.allTodos.length == 0) {
-        this.fetchTodos();
-      }
+
+      this.fetchTodos();
+
+    },
+
+    beforeCreate() {
+
     },
 
     beforeDestroy() {
@@ -126,17 +137,20 @@
 
 <style scoped>
 #to-do-project {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background:  rgb(36, 34, 34);
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   position: absolute;
   width: 100%;
-  height: 80%;
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  background: rgb(36, 34, 34);
   color: blanchedalmond;
 }
 

@@ -1,27 +1,21 @@
 <template>
   <div>
     <div class="volunteerHomeContainer">
-      <transition appear name="grow">
-        <h1>Which one are you?</h1>
-      </transition>
-      <transition appear name="slide-down">
-        <div>
-          <button class="userType">Admin User</button>
-          <button class="userType">Employee User</button>
-        </div>
-      </transition>
+      <router-view mode="out-in">
+
+      </router-view>
     </div>
   </div>
 </template>
 
 <script>
 
-  import { mapGetters } from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
   import volunteerStore from '../store/modules/volunteerMod';
 
   export default {
 
-    name: 'Volunteer Project',
+    name: 'VolunteerProject',
 
     data: function() {
       return{
@@ -33,7 +27,10 @@
 
     computed: {
       ...mapGetters({
-        volunteers: 'volunteerStore/volunteers'
+        volunteers: 'volunteerStore/volunteers',
+        admin: 'volunteerStore/admin',
+        dates: 'volunteerStore/dates',
+        userType: 'volunteerStore/userType'
       })
 
     },
@@ -47,13 +44,120 @@
 
 
     methods: {
+      ...mapActions({
+        callLoadVolunteers: 'volunteerStore/callLoadVolunteers',
+        callAddDates: 'volunteerStore/callAddDates',
+        callLoadAdmin: 'volunteerStore/callLoadAdmin'
+      }),
+
       registerStores() {
+        var locallyStoredState;
+        var storedVolunteers;
+
         this.$store.registerModule('volunteerStore', volunteerStore);
+        storedVolunteers = this.volunteers;
+
+        if(localStorage.getItem('volunteerStore') && storedVolunteers.length === 0) {
+          locallyStoredState = JSON.parse(localStorage.getItem('volunteerStore'));
+
+          this.callLoadVolunteers(locallyStoredState.volunteerStore.volunteers);
+          this.callLoadAdmin(locallyStoredState.volunteerStore.admin);
+
+        }
+
+
+
+      },
+
+      unregisterStores() {
+        this.$store.unregisterModule('volunteerStore');
+      },
+
+      //depending on what day it is today, find the monday that starts
+      //the current week, store dates for Monday - Sunday in array for week 1,
+      //then the next Monday - Sunday dates for week 2, etc.
+      storeDates() {
+        var month,
+            day,
+            formattedDate,
+            today = new Date(),
+            nextWeek = new Date(),
+            weekAfterNext = new Date(),
+            date = today.getDay(),
+            diff = today.getDate() - date + (date == 0 ? -6:1),
+            diffNextMonday = diff + 7,
+            diffMondayAfterNext = diff + 14,
+            monday = new Date(today.setDate(diff)),
+            nextMonday = new Date(nextWeek.setDate(diffNextMonday)),
+            mondayAfterNext = new Date(weekAfterNext.setDate(diffMondayAfterNext)),
+            week1Arr = [],
+            week2Arr = [],
+            week3Arr = [],
+            dateObj = {};
+
+        for (var i = 0; i < 7; i++) {
+          var nextDay = new Date(this.getNextDay(new Date(monday), i));
+          var newObj = {};
+
+          month = (1 + nextDay.getMonth()).toString();
+          month = month.length > 1 ? month : '0' + month;
+          day = nextDay.getDate().toString();
+          day = day.length > 1 ? day : '0' + day;
+          formattedDate = month + '/' + day;
+
+          newObj.day = formattedDate;
+          newObj.availability = {checked:false};
+          monday = new Date(monday);
+          week1Arr.push(newObj);
+        }
+
+        for (var j = 0; j < 7; j++) {
+          var nextDay2 = new Date(this.getNextDay(new Date(nextMonday), j));
+          var newObj2 = {};
+
+          month = (1 + nextDay2.getMonth()).toString();
+          month = month.length > 1 ? month : '0' + month;
+          day = nextDay2.getDate().toString();
+          day = day.length > 1 ? day : '0' + day;
+          formattedDate = month + '/' + day;
+
+          newObj2.day = formattedDate;
+          newObj2.availability = {checked:false};
+          nextMonday = new Date(nextMonday);
+          week2Arr.push(newObj2);
+        }
+
+        for (var k = 0; k < 7; k++) {
+          var nextDay3 = new Date(this.getNextDay(new Date(mondayAfterNext), k));
+          var newObj3 = {};
+
+          month = (1 + nextDay3.getMonth()).toString();
+          month = month.length > 1 ? month : '0' + month;
+          day = nextDay3.getDate().toString();
+          day = day.length > 1 ? day : '0' + day;
+          formattedDate = month + '/' + day;
+
+          newObj3.day = formattedDate;
+          newObj3.availability = {checked:false};
+          mondayAfterNext = new Date(mondayAfterNext);
+          week3Arr.push(newObj3);
+        }
+        //getDate() returns the day of the month (like 30, for the 30th),
+        //and getDay() returns 0 for Sunday, 1 for Monday, etc.
+        dateObj.week1 = week1Arr;
+        dateObj.week2 = week2Arr;
+        dateObj.week3 = week3Arr;
+
+        this.callAddDates(dateObj);
+      },
+
+
+      getNextDay(monday,day) {
+        return monday.setDate(monday.getDate() + day);
       }
 
 
     },
-
 
 
     watch: {
@@ -64,7 +168,13 @@
 
     mounted: function() {
       this.registerStores();
-    }
+      this.storeDates();
+    },
+
+
+    beforeDestroy() {
+      this.unregisterStores();
+    },
   }
 
 </script>
@@ -74,58 +184,18 @@
 
 
 .volunteerHomeContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background:  rgb(36, 34, 34);
   width: 100%;
-  height: 80%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-h1 {
-  text-decoration: blanchedalmond;
-}
 
-.grow-enter-active {
-  animation: grow 1s forwards;
-}
-
-.slide-down-enter {
-  opacity: 0;
-}
-
-.slide-down-enter-active {
-  animation: slideDown 1s cubic-bezier(0.075, 0.82, 0.165, 1) forwards;
-}
-
-
-
-@keyframes grow {
-  0% {
-    transform: scale(0);
-  }
-
-  50% {
-    transform: scale(1.3);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes slideDown {
-  0% {
-    opacity: 0;
-    transform: translateY(-70em);
-  }
-  75% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0em);
-  }
-}
 
 </style>

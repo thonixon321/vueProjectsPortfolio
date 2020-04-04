@@ -36,7 +36,7 @@
     computed: {
 
       ...mapGetters({
-        allTodos: 'allTodos'
+        allTodos: 'toDoStore/allTodos'
       })
 
     },

@@ -6,17 +6,21 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 //create store
-export const store = new Vuex.Store({});
+export const store = new Vuex.Store({
+
+});
 
 store.subscribe((mutation, state) => {
   //check which modules are having their state
-  //change, and update the local storage
+  //changed, and update the local storage for that module
+  console.log(mutation.type, state);
   if (mutation.type.startsWith("toDo")) {
     // Store the state object as a JSON string
     localStorage.setItem('toDoStore', JSON.stringify(state));
   }
 
   if (mutation.type.startsWith("volunteer")) {
+    console.log(JSON.stringify(state));
     localStorage.setItem('volunteerStore', JSON.stringify(state));
   }
 

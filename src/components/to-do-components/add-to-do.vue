@@ -59,7 +59,12 @@ export default {
           callBack: this.updateTasksResponse
         };
 
-        this.sendAxios(payLoadObj, settingsObj);
+        if(localStorage.getItem('toDoStore')) {
+          this.callAddToDo(payLoadObj);
+        }
+        else{
+          this.sendAxios(payLoadObj, settingsObj);
+        }
 
      }
     this.addToDo = false;

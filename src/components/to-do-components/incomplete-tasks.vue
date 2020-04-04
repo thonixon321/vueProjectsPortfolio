@@ -96,7 +96,12 @@
           callBack: this.completeTheToDoResponse
         };
 
-        this.sendAxios(payLoadObj, settingsObj);
+        if(localStorage.getItem('toDoStore')) {
+          this.callCompleteToDo(payLoadObj);
+        }
+        else{
+          this.sendAxios(payLoadObj, settingsObj);
+        }
       },
 
 

@@ -20,6 +20,10 @@ export default(
   //call mutations and getters from here (step 1)
    actions: {
 
+    callLoadToDos (state, todo) {
+      state.commit('loadToDos', todo);
+    },
+
     callAddToDo (state, todo) {
       console.log(todo);
       state.commit('addAToDo', todo);
@@ -36,20 +40,14 @@ export default(
 
   //set/update/add data with these methods (step 2)
    mutations: {
-    initialiseStore(state) {
-        if(localStorage.getItem('toDoStore')) {
-          // Replace the state object with the stored item
-          this.replaceState(
-            Object.assign(state, JSON.parse(localStorage.getItem('toDoStore')))
-          );
 
-        }
-
+    loadToDos (state, todo) {
+      state.todo = todo;
     },
 
     addAToDo (state, todo) {
       state.todo.push(todo);
-      console.log(state);
+      console.log(state.todo);
     },
 
     completeAToDo (state, todo) {
