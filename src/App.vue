@@ -25,6 +25,12 @@
         to="/volunteer-project">
           Volunteer Schedule
         </router-link>
+        <router-link
+        @click.native="sideBarActive=false; notHome=true"
+        class="navMain travelNav"
+        to="/travel-app">
+          Travel App
+        </router-link>
       </div>
     </transition>
 
@@ -58,8 +64,8 @@
 
     </div>
 
-    <transition name="fade">
-      <router-view class="router-view">
+    <transition name="moveUp">
+      <router-view class="router-view" mode="out-in">
 
       </router-view>
     </transition>
@@ -265,7 +271,7 @@ img.vueTitle_2 {
     background-color: rgb(31, 35, 83);
     width: 20%;
     height: 100%;
-    z-index: 5;
+    z-index: 8;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -285,6 +291,7 @@ img.vueTitle_2 {
   }
 
   .hamburgerIcon {
+    position: fixed;
     width: 3em;
     height: 3em;
     border:blanchedalmond 1px solid;
@@ -294,7 +301,7 @@ img.vueTitle_2 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 4;
+    z-index: 6;
   }
 
   .closeIcon {
@@ -367,6 +374,14 @@ img.vueTitle_2 {
     opacity: 0;
   }
 
+.moveUp-enter-active {
+  animation: fadeIn 1s ease-in;
+}
+
+.moveUp-leave-active {
+  animation: moveUp 0.5s ease-in;
+}
+
   @keyframes slide {
     from {
       left: -100%;
@@ -385,6 +400,30 @@ img.vueTitle_2 {
 
     100% {
       transform: scale(1);
+    }
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+
+    50% {
+      opacity: 0.5;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes moveUp {
+    from{
+      transform: translateY(0);
+    }
+
+    to{
+      transform: translateY(-4000px);
     }
   }
 

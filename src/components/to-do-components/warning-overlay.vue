@@ -57,7 +57,12 @@
 
         if (res == 'confirm') {
 
-          this.sendAxios(payLoadObj, settingsObj);
+          if(localStorage.getItem('toDoStore')) {
+            this.item.deleted = true;
+          }
+          else{
+            this.sendAxios(payLoadObj, settingsObj);
+          }
 
         }
         this.cardShowing = false;
