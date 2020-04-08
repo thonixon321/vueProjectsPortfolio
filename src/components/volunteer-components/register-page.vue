@@ -29,12 +29,12 @@
         </div>
         <div class='inputContainer'>
           <label for="password">Password:</label>
-          <input v-model="password" type='text' id="password">
+          <input v-model="password" type='password' id="password">
           <p v-show="password == '' && attemptSubmit" class='requiredMsg'>*required</p>
         </div>
         <div class='inputContainer'>
           <label for="confirmPassword">Confirm Password:</label>
-          <input v-model="confirmedPassword" type='text' id="confirmPassword">
+          <input v-model="confirmedPassword" type='password' id="confirmPassword">
           <p v-show="confirmedPassword == '' && attemptSubmit" class='requiredMsg'>*required</p>
           <p v-show="passwordMismatch && attemptSubmit" class='requiredMsg'>Passwords do not match</p>
         </div>

@@ -29,7 +29,7 @@ export default(
     //call mutations and getters from here (step 1)
     actions: {
       callUpdateAvailability(state, volunteer) {
-        state.commit('updateAvailability', volunteer)
+        state.commit('updateAvailability', volunteer);
       },
 
       callChangeUserType(state, type) {

@@ -12,7 +12,7 @@
         </div>
         <div class='inputContainer'>
           <label :for="'password_login'">Password:</label>
-          <input v-model="password" type='text' :id="'password_login'">
+          <input v-model="password" type='password' :id="'password_login'">
           <p v-show="password == '' && attemptSubmit" class='requiredMsg'>*required</p>
         </div>
         <div class='inputContainer'>
@@ -75,6 +75,7 @@
               //make sure the store updates the user type
               self.callChangeUserType(el.userType);
               self.$router.push({name: 'user-profile', params: {userName: self.userName}});
+              return;
           }
         });
         this.volunteers.forEach(function(el){
