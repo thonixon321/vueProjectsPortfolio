@@ -1,0 +1,6 @@
+const svgs = {
+  checkmark: '<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" id="svg8" version="1.1" viewBox="0 0 14.208334 14.689585" height="55.519691" width="53.70079"> <defs id="defs2" /> <metadata id="metadata5"> <rdf:RDF> <cc:Work rdf:about=""> <dc:format>image/svg+xml</dc:format> <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" /> <dc:title></dc:title> </cc:Work> </rdf:RDF> </metadata><g transform="translate(0,-282.3104)" id="layer1"> <rect class="box" ry="5.8359461" rx="0.133719" y="283.39587" x="0.82788604" height="12.644545" width="12.833532" id="rect821" style="opacity:0.72000002;fill:none;fill-opacity:1;stroke:blanchedalmond;stroke-width:0.56170589;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-opacity:1;paint-order:markers fill stroke" /><path class="check" id="path825"  d="m 3.3004076,290.34727 c 2.2981325,2.21414 2.2981325,2.21414 2.2981325,2.21414 l 5.6777389,-6.70229" style="fill:none;stroke:blanchedalmond;stroke-width:1.69492209;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1" /> </g></svg>'
+};
+
+
+export default svgs;

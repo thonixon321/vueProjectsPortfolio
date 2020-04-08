@@ -106,7 +106,7 @@
           formattedDate = month + '/' + day;
 
           newObj.day = formattedDate;
-          newObj.availability = {checked:false};
+          newObj.availability = {checked:false, jobDetails: [{edit: false, time: '', name: '', course: ''}]};
           monday = new Date(monday);
           week1Arr.push(newObj);
         }
@@ -122,7 +122,7 @@
           formattedDate = month + '/' + day;
 
           newObj2.day = formattedDate;
-          newObj2.availability = {checked:false};
+          newObj2.availability = {checked:false, jobDetails: [{edit: false, time: '', name: '', course: ''}]};
           nextMonday = new Date(nextMonday);
           week2Arr.push(newObj2);
         }
@@ -138,7 +138,7 @@
           formattedDate = month + '/' + day;
 
           newObj3.day = formattedDate;
-          newObj3.availability = {checked:false};
+          newObj3.availability = {checked:false, jobDetails: [{edit: false, time: '', name: '', course: ''}]};
           mondayAfterNext = new Date(mondayAfterNext);
           week3Arr.push(newObj3);
         }
@@ -148,6 +148,28 @@
         dateObj.week2 = week2Arr;
         dateObj.week3 = week3Arr;
 
+        this.volunteers.forEach(function(el){
+          //make sure the work weeks stored for each volunteer match
+          //with the current weeks we just found through today's date
+          if (el.availability.week_1[0].day !== week1Arr[0].day) {
+            if (el.availability.week_1[0].day == week2Arr[0].day) {
+              el.availability.week_1 = el.availability.week_2;
+              el.availability.week_2 = el.availability.week_3;
+              el.availability.week_3 = week3Arr;
+            }
+            else if(el.availability.week_1[0].day == week3Arr[0].day) {
+              el.availability.week_1 = el.availability.week_3;
+              el.availability.week_2 = week2Arr;
+              el.availability.week_3 = week3Arr;
+            }
+            else{
+              el.availability.week_1 = week1Arr;
+              el.availability.week_2 = week2Arr;
+              el.availability.week_3 = week3Arr;
+            }
+          }
+        });
+        this.callLoadVolunteers(this.volunteers);
         this.callAddDates(dateObj);
       },
 

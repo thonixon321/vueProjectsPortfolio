@@ -3,6 +3,7 @@
     <div class="profileHeader">
       <img src='../../assets/profileAvatar.png' alt='avatar'>
       <div class="userNameEmployee">Hello {{ userName }}!</div>
+      <router-link class="logoutLink" :to="{name: 'volunteer-login'}">Log out</router-link>
     </div>
 
     <transition name="appear" mode="out-in">
@@ -96,11 +97,13 @@
   .profileHeader {
     position: absolute;
     top: 10%;
-    left: 2.75%;
+    left: 0.75%;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
     align-items: center;
-    justify-content: center;
     font-size: 1.5em;
+    width: 100%;
   }
 
   .savedChanges {
@@ -108,6 +111,13 @@
     top: 43%;
     left: 44%;
     font-size: 2em;
+  }
+
+  .logoutLink {
+    position: absolute;
+    right: 6%;
+    cursor: pointer;
+    z-index: 2;
   }
 
   img {

@@ -2,90 +2,30 @@
   <div class="adminContainer">
     <h2>Available Volunteers:</h2>
     <div class='availableWorkersList'>
-      <div v-for="(volunteer, index) in volunteers" :key="index" @click="expand = index">
-        <div class="volunteerContainer" :class="{expand: expand == index && expand !== false}">
+      <div v-for="(volunteer, outerIndex) in volunteers" :key="outerIndex" @click="expand = outerIndex">
+        <div class="volunteerContainer" :class="{expand: expand == outerIndex && expand !== false}">
           <h2>{{volunteer.name}}</h2>
-          <div v-show="expand == index && expand !== false" class='closeContain' @click.stop="expand = false">
+          <div v-show="expand == outerIndex && expand !== false" class='closeContain' @click.stop="expand = false">
             <div class='closeButton'></div>
           </div>
-          <select @change="changeWeek" name='weeks' id='weekDropDownAdmin'>
+          <select @change="changeWeek" name='weeks' :id='`weekDropDownAdmin_${volunteer.userName}_${outerIndex}`'>
             <option :value='volunteer.availability.week_1[0].day+" - "+volunteer.availability.week_1[6].day'>{{ volunteer.availability.week_1[0].day+" - "+volunteer.availability.week_1[6].day }}</option>
             <option :value='volunteer.availability.week_2[0].day+" - "+volunteer.availability.week_2[6].day'>{{ volunteer.availability.week_2[0].day+" - "+volunteer.availability.week_2[6].day }}</option>
             <option :value='volunteer.availability.week_3[0].day+" - "+volunteer.availability.week_3[6].day'>{{ volunteer.availability.week_3[0].day+" - "+volunteer.availability.week_3[6].day }}</option>
           </select>
           <transition name="slideLeft" mode="out-in">
-            <div v-show="weekShow == 1" class='weekContainer weekContainer_1'>
-              <div class='workDayCard' v-for="(card, index) in volunteer.availability.week_1" :key="index">
-                <p>{{daysOfWeek[index]}} - {{card.day}}</p>
-                <hr>
-                <div class='cardContent'>
-                  <div class="availableCard" v-if="card.availability.checked">
-                    <span v-show="hide !== index">Available!</span>
-                    <button v-show="hide !== index" @click="assignWork(index)" class='assignButton'>Assign</button>
-                    <div v-show="assignJob == index && assignJob !== false" class='assignDetails'>
-                      <label :for='`jobTime_${index}`'>Time:</label>
-                      <input type='text' :id='`jobTime_${index}`'>
-                      <label :for='`jobName_${index}`'>Name:</label>
-                      <input type='text' :id='`jobName_${index}`'>
-                      <label :for='`jobCourse_${index}`'>Course:</label>
-                      <input type='text' :id='`jobCourse_${index}`'>
-                      <button class='submitAssign'>Submit</button>
-                      <button @click="assignWork('')" class='cancelAssign'>Cancel</button>
-                    </div>
-                  </div>
-                  <div v-else>Not Available</div>
-                </div>
-              </div>
+            <div v-show="weekShow == 1">
+              <work-week :weekNum="'week_1'" :outerIndex="outerIndex" :volunteer="volunteer" :availability="volunteer.availability.week_1" />
             </div>
           </transition>
           <transition name="slideLeft" mode="out-in">
-            <div v-show="weekShow == 2" class='weekContainer weekContainer_2'>
-              <div class='workDayCard' v-for="(card, index) in volunteer.availability.week_2" :key="index">
-                <p>{{daysOfWeek[index]}} - {{card.day}}</p>
-                <hr>
-                <div class='cardContent'>
-                  <div class="availableCard" v-if="card.availability.checked">
-                    <span v-show="hide !== index">Available!</span>
-                    <button v-show="hide !== index" @click="assignWork(index)" class='assignButton'>Assign</button>
-                    <div v-show="assignJob == index && assignJob !== false" class='assignDetails'>
-                      <label :for='`jobTime_${index}`'>Time</label>
-                      <input type='text' :id='`jobTime_${index}`'>
-                      <label :for='`jobName_${index}`'>Name:</label>
-                      <input type='text' :id='`jobName_${index}`'>
-                      <label :for='`jobCourse_${index}`'>Course:</label>
-                      <input type='text' :id='`jobCourse_${index}`'>
-                      <button class='submitAssign'>Submit</button>
-                      <button @click="assignWork('')" class='cancelAssign'>Cancel</button>
-                    </div>
-                  </div>
-                  <div v-else>Not Available</div>
-                </div>
-              </div>
+            <div v-show="weekShow == 2">
+              <work-week :weekNum="'week_2'" :outerIndex="outerIndex" :volunteer="volunteer" :availability="volunteer.availability.week_2" />
             </div>
           </transition>
           <transition name="slideLeft" mode="out-in">
-            <div v-show="weekShow == 3" class='weekContainer weekContainer_3'>
-              <div class='workDayCard' v-for="(card, index) in volunteer.availability.week_3" :key="index">
-                <p>{{daysOfWeek[index]}} - {{card.day}}</p>
-                <hr>
-                <div class='cardContent'>
-                  <div class="availableCard" v-if="card.availability.checked">
-                    <span v-show="hide !== index">Available!</span>
-                    <button v-show="hide !== index" @click="assignWork(index)" class='assignButton'>Assign</button>
-                    <div v-show="assignJob == index && assignJob !== false" class='assignDetails'>
-                      <label :for='`jobTime_${index}`'>Time</label>
-                      <input type='text' :id='`jobTime_${index}`'>
-                      <label :for='`jobName_${index}`'>Name:</label>
-                      <input type='text' :id='`jobName_${index}`'>
-                      <label :for='`jobCourse_${index}`'>Course:</label>
-                      <input type='text' :id='`jobCourse_${index}`'>
-                      <button class='submitAssign'>Submit</button>
-                      <button @click="assignWork('')" class='cancelAssign'>Cancel</button>
-                    </div>
-                  </div>
-                  <div v-else>Not Available</div>
-                </div>
-              </div>
+            <div v-show="weekShow == 3">
+              <work-week :weekNum="'week_3'" :outerIndex="outerIndex" :volunteer="volunteer" :availability="volunteer.availability.week_3" />
             </div>
           </transition>
         </div>
@@ -96,7 +36,8 @@
 
 <script>
 
-  import { mapGetters } from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
+  import workWeek from './admin-components/work-week';
 
   export default {
 
@@ -104,12 +45,10 @@
 
     data: function() {
       return{
-        hide: '',
-        assignJob: false,
         componentLoaded: false,
         expand: false,
         weekShow: 1,
-        daysOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
       }
     },
 
@@ -153,6 +92,10 @@
 
 
     methods: {
+      ...mapActions({
+        callLoadVolunteers: 'volunteerStore/callLoadVolunteers'
+      }),
+
        changeWeek(event) {
         if (event.target.value == this.week1) {
           this.weekShow = 1;
@@ -163,11 +106,6 @@
         else{
           this.weekShow = 3;
         }
-      },
-
-      assignWork(index) {
-        this.assignJob = index;
-        this.hide = index;
       }
     },
 
@@ -175,6 +113,11 @@
 
     watch: {
 
+    },
+
+
+    components: {
+      workWeek
     },
 
 
@@ -188,23 +131,6 @@
 
 
 <style scoped>
-  .availableCard {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .availableCard button {
-    background: transparent;
-    border: 1px black solid;
-    padding: .2em .5em;
-    color: black;
-    margin-top: .3em;
-  }
-
-  .availableCard button:hover {
-    background: black;
-    color: blanchedalmond;
-  }
 
   .adminContainer {
     position: relative;
@@ -265,7 +191,7 @@
     transform: scale(1.1) translateX(6%);
     background: blanchedalmond;
     color: rgb(36, 34, 34);
-    height: 23em;
+    height: 35em;
     cursor: default;
   }
 
@@ -281,32 +207,6 @@
 
     h2{
       padding: .2em .5em;
-    }
-
-    hr{
-      width: 100%;
-    }
-
-    .weekContainer {
-      position: absolute;
-      display: flex;
-      width: 100%;
-    }
-    .workDayCard {
-      display: flex;
-      flex-direction: column;
-      border: 1px black solid;
-      padding: .21em;
-      margin: 1em 1.52em;
-      height: 15em;
-      width: 13%;
-      font-size: .9em;
-    }
-    .cardContent{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 59%;
     }
 
     .slideLeft-enter-active,

@@ -15,7 +15,7 @@
             <h3>{{daysOfWeek[index]}} - {{card.day}}</h3>
             <hr>
             <div class='cardContent'>
-              <div class='inner'>
+              <div v-if="card.availability.jobDetails[0].time == ''" class='inner'>
                 <input v-model="card.availability.checked" type='checkbox' :name='`cb_${index}`' :id='`cb_${index}`'>
                 <label :for='`cb_${index}`'>
                   <svg
@@ -66,6 +66,15 @@
 
                 </label>
               </div>
+              <div v-else class='jobsAssigned'>
+                <div v-for="(job, jobIndex) in card.availability.jobDetails" :key="jobIndex" >
+                 <div v-if="job.time !== ''" class='jobsDisplay'>
+                  <p>{{job.time}}</p>
+                  <p>{{job.name}}</p>
+                  <p>{{job.course}}</p>
+                 </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -78,7 +87,7 @@
             <h3>{{daysOfWeek[index]}} - {{card.day}}</h3>
             <hr>
             <div class='cardContent'>
-              <div class='inner'>
+              <div v-if="card.availability.jobDetails[0].time == ''" class='inner'>
                 <input v-model="card.availability.checked" type='checkbox' :name='`cb_${card.day}`' :id='`cb_${card.day}`'>
                 <label :for='`cb_${card.day}`'>
                   <svg
@@ -129,6 +138,15 @@
 
                 </label>
               </div>
+              <div v-else class='jobsAssigned'>
+                <div v-for="(job, jobIndex) in card.availability.jobDetails" :key="jobIndex" >
+                 <div v-if="job.time !== ''" class='jobsDisplay'>
+                  <p>{{job.time}}</p>
+                  <p>{{job.name}}</p>
+                  <p>{{job.course}}</p>
+                 </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -141,7 +159,7 @@
              <h3>{{daysOfWeek[index]}} - {{card.day}}</h3>
             <hr>
             <div class='cardContent'>
-              <div class='inner'>
+              <div v-if="card.availability.jobDetails[0].time == ''" class='inner'>
                 <input v-model="card.availability.checked" type='checkbox' :name='`cb_${card.day}`' :id='`cb_${card.day}`'>
                 <label :for='`cb_${card.day}`'>
                   <svg
@@ -191,6 +209,15 @@
                   </svg>
 
                 </label>
+              </div>
+              <div v-else class='jobsAssigned'>
+                <div v-for="(job, jobIndex) in card.availability.jobDetails" :key="jobIndex" >
+                  <div v-if="job.time !== ''" class='jobsDisplay'>
+                    <p>{{job.time}}</p>
+                    <p>{{job.name}}</p>
+                    <p>{{job.course}}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -375,10 +402,10 @@ select {
   width: 12%;
 }
 .cardContent{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 59%;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  overflow-x: hidden;
 }
 
 .slideLeft-enter-active,
@@ -424,6 +451,19 @@ svg {
 input[type=checkbox]:checked + label .check {
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 1s linear;
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: inherit;
+  height: 90%;
+}
+
+.jobsDisplay {
+  border: 1px blanchedalmond solid;
+  padding: .5em 1.5em;
 }
 
 .submitSchedule {
