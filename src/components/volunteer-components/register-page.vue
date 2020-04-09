@@ -137,6 +137,8 @@
       validateForm() {
         var addUser;
         var self = this;
+        var stringifyDates = JSON.stringify(this.dates);
+        var datesParsed = JSON.parse(stringifyDates);
 
         this.attemptSubmit = true;
 
@@ -173,7 +175,8 @@
               this.callAddAdmin(addUser);
             }
             else{
-              addUser.availability = this.dates;
+              console.log(datesParsed);
+              addUser.availability = datesParsed;
               this.callChangeUserType('Employee');
               addUser.userType = 'Employee';
               this.callAddVolunteer(addUser);
@@ -250,6 +253,13 @@ h1 {
       color: crimson;
     }
 
+    .errorShake {
+      animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+      transform: translate3d(0, 0, 0);
+      backface-visibility: hidden;
+      perspective: 1000px;
+    }
+
 @keyframes grow {
   0% {
     transform: scale(0);
@@ -275,6 +285,24 @@ h1 {
   100% {
     opacity: 1;
     transform: translateY(0em);
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
   }
 }
 </style>

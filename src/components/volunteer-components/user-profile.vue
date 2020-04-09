@@ -96,8 +96,8 @@
   }
   .profileHeader {
     position: absolute;
-    top: 10%;
-    left: 0.75%;
+    top: 4em;
+    left: 3em;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -115,9 +115,12 @@
 
   .logoutLink {
     position: absolute;
-    right: 6%;
+    top: -3.5em;
+    right: 4.2em;
+    white-space: nowrap;
     cursor: pointer;
     z-index: 2;
+    color: blanchedalmond;
   }
 
   img {

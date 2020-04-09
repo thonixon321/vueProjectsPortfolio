@@ -31,6 +31,12 @@
         to="/travel-app">
           Travel App
         </router-link>
+        <router-link
+        @click.native="sideBarActive=false; notHome=true"
+        class="navMain travelNav"
+        :to="{name:'materialize-app'}">
+          Materialize App
+        </router-link>
       </div>
     </transition>
 
@@ -269,7 +275,7 @@ img.vueTitle_2 {
     position: fixed;
     top: 0;
     background-color: rgb(31, 35, 83);
-    width: 20%;
+    width: 16em;
     height: 100%;
     z-index: 8;
     display: flex;
@@ -295,6 +301,7 @@ img.vueTitle_2 {
     width: 3em;
     height: 3em;
     border:blanchedalmond 1px solid;
+    background: blanchedalmond;
     margin: 1em;
     display: flex;
     flex-direction: column;
@@ -317,9 +324,9 @@ img.vueTitle_2 {
   }
 
   .hamburgerIcon .line {
-    width: 70%;
-    height: .2em;
-    background-color: blanchedalmond;
+    width: 2em;
+    height: .22em;
+    background-color: rgb(36, 34, 34);
     margin: .23em;
   }
 

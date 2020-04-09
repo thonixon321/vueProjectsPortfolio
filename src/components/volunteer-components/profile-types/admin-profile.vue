@@ -1,6 +1,6 @@
 <template>
   <div class="adminContainer">
-    <h2>Available Volunteers:</h2>
+    <h2 class="listH2">Available Volunteers:</h2>
     <div class='availableWorkersList'>
       <div v-for="(volunteer, outerIndex) in volunteers" :key="outerIndex" @click="expand = outerIndex">
         <div class="volunteerContainer" :class="{expand: expand == outerIndex && expand !== false}">
@@ -8,24 +8,24 @@
           <div v-show="expand == outerIndex && expand !== false" class='closeContain' @click.stop="expand = false">
             <div class='closeButton'></div>
           </div>
-          <select @change="changeWeek" name='weeks' :id='`weekDropDownAdmin_${volunteer.userName}_${outerIndex}`'>
-            <option :value='volunteer.availability.week_1[0].day+" - "+volunteer.availability.week_1[6].day'>{{ volunteer.availability.week_1[0].day+" - "+volunteer.availability.week_1[6].day }}</option>
-            <option :value='volunteer.availability.week_2[0].day+" - "+volunteer.availability.week_2[6].day'>{{ volunteer.availability.week_2[0].day+" - "+volunteer.availability.week_2[6].day }}</option>
-            <option :value='volunteer.availability.week_3[0].day+" - "+volunteer.availability.week_3[6].day'>{{ volunteer.availability.week_3[0].day+" - "+volunteer.availability.week_3[6].day }}</option>
+          <select v-model="volunteer.availability.weekShowing" name='weeks' :id='`weekDropDownAdmin_${volunteer.userName}_${outerIndex}`'>
+            <option :value='1'>{{ volunteer.availability.week_1[0].day+" - "+volunteer.availability.week_1[6].day }}</option>
+            <option :value='2'>{{ volunteer.availability.week_2[0].day+" - "+volunteer.availability.week_2[6].day }}</option>
+            <option :value='3'>{{ volunteer.availability.week_3[0].day+" - "+volunteer.availability.week_3[6].day }}</option>
           </select>
           <transition name="slideLeft" mode="out-in">
-            <div v-show="weekShow == 1">
-              <work-week :weekNum="'week_1'" :outerIndex="outerIndex" :volunteer="volunteer" :availability="volunteer.availability.week_1" />
+            <div v-show="volunteer.availability.weekShowing == 1">
+              <work-week :weekNum="'week_1'" :outerIndex="outerIndex" :volunteers="volunteers" :volunteer="volunteer" :availability="volunteer.availability.week_1" />
             </div>
           </transition>
           <transition name="slideLeft" mode="out-in">
-            <div v-show="weekShow == 2">
-              <work-week :weekNum="'week_2'" :outerIndex="outerIndex" :volunteer="volunteer" :availability="volunteer.availability.week_2" />
+            <div v-show="volunteer.availability.weekShowing == 2">
+              <work-week :weekNum="'week_2'" :outerIndex="outerIndex" :volunteers="volunteers" :volunteer="volunteer" :availability="volunteer.availability.week_2" />
             </div>
           </transition>
           <transition name="slideLeft" mode="out-in">
-            <div v-show="weekShow == 3">
-              <work-week :weekNum="'week_3'" :outerIndex="outerIndex" :volunteer="volunteer" :availability="volunteer.availability.week_3" />
+            <div v-show="volunteer.availability.weekShowing == 3">
+              <work-week :weekNum="'week_3'" :outerIndex="outerIndex" :volunteers="volunteers" :volunteer="volunteer" :availability="volunteer.availability.week_3" />
             </div>
           </transition>
         </div>
@@ -36,7 +36,7 @@
 
 <script>
 
-  import { mapGetters, mapActions } from 'vuex';
+  import { mapGetters } from 'vuex';
   import workWeek from './admin-components/work-week';
 
   export default {
@@ -45,9 +45,9 @@
 
     data: function() {
       return{
-        componentLoaded: false,
+
         expand: false,
-        weekShow: 1,
+        volunteers: ''
 
       }
     },
@@ -56,31 +56,9 @@
 
     computed: {
       ...mapGetters({
-        volunteers: 'volunteerStore/volunteers',
         dates: 'volunteerStore/dates',
       }),
 
-      week1() {
-        var week = '';
-        if (this.componentLoaded) {
-          week = this.dates.week_1[0].day+" - "+this.dates.week_1[6].day;
-        }
-        return week;
-      },
-      week2() {
-        var week = '';
-        if (this.componentLoaded) {
-          week = this.dates.week_2[0].day+" - "+this.dates.week_2[6].day;
-        }
-        return week;
-      },
-      week3() {
-        var week = '';
-        if (this.componentLoaded) {
-          week = this.dates.week_3[0].day+" - "+this.dates.week_3[6].day;
-        }
-        return week;
-      },
     },
 
 
@@ -92,21 +70,8 @@
 
 
     methods: {
-      ...mapActions({
-        callLoadVolunteers: 'volunteerStore/callLoadVolunteers'
-      }),
 
-       changeWeek(event) {
-        if (event.target.value == this.week1) {
-          this.weekShow = 1;
-        }
-        else if (event.target.value == this.week2){
-          this.weekShow = 2;
-        }
-        else{
-          this.weekShow = 3;
-        }
-      }
+
     },
 
 
@@ -123,7 +88,8 @@
 
 
     mounted: function() {
-       this.componentLoaded = true;
+      var locallyStored = JSON.parse(localStorage.getItem('volunteerStore'));
+      this.volunteers = locallyStored.volunteerStore.volunteers;
     }
   }
 
@@ -134,8 +100,8 @@
 
   .adminContainer {
     position: relative;
-    top: 20%;
-    left: 3%;
+    top: 12em;
+    left: 2em;
   }
 
   .closeContain {
@@ -169,6 +135,10 @@
     top: 9.3px;
   }
 
+  .listH2 {
+    margin-left: 1em;
+  }
+
   .availableWorkersList {
     display: flex;
     flex-direction: column;
@@ -178,8 +148,8 @@
   .volunteerContainer {
     position: relative;
     border: 1px blanchedalmond solid;
-    width: 80%;
-    height: 5em;
+    width: 86%;
+    height: 4.5em;
     margin: 1em;
     cursor: pointer;
     border-radius: 4px;
@@ -188,15 +158,15 @@
   }
 
   .volunteerContainer.expand {
-    transform: scale(1.1) translateX(6%);
+    transform: scale(1.01) translateX(3%);
     background: blanchedalmond;
     color: rgb(36, 34, 34);
-    height: 35em;
+    height: 41em;
     cursor: default;
   }
 
   .volunteerContainer:hover {
-    transform: scale(1.1) translateX(6%);
+    transform: scale(1.01) translateX(3%);
     background: blanchedalmond;
     color: rgb(36, 34, 34);
   }

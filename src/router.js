@@ -1,9 +1,7 @@
 import Vue from 'vue';
-// import { store } from './store/';
-// import volunteerStore from './store/modules/volunteerMod';
 import Router from 'vue-router';
 import Home from './travel-router-practice/src/views/Home.vue';
-// import destinationStore from './travel-router-practice/src/store';
+import destinationStore from './travel-router-practice/src/store';
 
 Vue.use(Router);
 
@@ -95,6 +93,11 @@ const router = new Router({
       ],
     },
     {
+      path: '/materialize-app',
+      name: 'materialize-app',
+      component: () => import('./components/materialize-project.vue')
+    },
+    {
       path: "/404",
       alias: "*",
       name: "notFound",
@@ -108,56 +111,32 @@ const router = new Router({
 //if so, do some action. In this case, I check for a particular
 //path that has a meta tag, see if the url param exists in my store,
 //and if it doesn't then send user to 404 page
-// router.beforeEach( (to, from, next) => {
-//    var VueStore;
-//    var locallyStoredState;
-//   //find() is like a forEach that loops through until
-//   //what is being tested evaluates to true, if so, it will
-//   //return true, otherwise it will be undefined
-//   const exists = destinationStore.destinations.find(
-//     destination => destination.slug === to.params.slug
-//   );
+router.beforeEach( (to, from, next) => {
 
-//   //check for the error first, and always have the else give the expected behaviour "next()" - otherwise an endless loop can occur -
-//   //the some() method will test the given array and if one of the items
-//   //in the array passes as true, then it returns the statement as true -
-//   //we use this here in case there are multiple paths that are matched -
-//   //ones with children paths for example, and if so, we want to find the path
-//   //with the meta tag within that matched array of paths
-//   if (to.matched.some(record => record.meta.checkUrl) && exists == undefined) {
-//     next({name: "notFound"});
-//   }
-//   else if (from.name !== "volunteer-register" && to.matched.some(record => record.meta.requireAuth)) {
+  //find() is like a forEach that loops through until
+  //what is being tested evaluates to true, if so, it will
+  //return true, otherwise it will be undefined
+  const exists = destinationStore.destinations.find(
+    destination => destination.slug === to.params.slug
+  );
 
-//     if(localStorage.getItem('volunteerStore') && store.getters['volunteerStore/volunteers'] === undefined) {
-//       store.registerModule('volunteerStore', volunteerStore);
-//       locallyStoredState = JSON.parse(localStorage.getItem('volunteerStore'));
-//       console.log(locallyStoredState);
-//       store.dispatch('volunteerStore/callLoadVolunteers', locallyStoredState.volunteerStore.volunteers);
-//       console.log(locallyStoredState.volunteerStore.dates);
-//       store.dispatch('volunteerStore/callAddDates', locallyStoredState.volunteerStore.dates);
-//     }
-//     else{
-//       next({name: 'volunteer-login'});
-//     }
+  //check for the error first, and always have the else give the expected behaviour "next()" - otherwise an endless loop can occur -
+  //the some() method will test the given array and if one of the items
+  //in the array passes as true, then it returns the statement as true -
+  //we use this here in case there are multiple paths that are matched -
+  //ones with children paths for example, and if so, we want to find the path
+  //with the meta tag within that matched array of paths
+  if (to.matched.some(record => record.meta.checkUrl) && exists == undefined) {
+    next({name: "notFound"});
+  }
+  else if (from.name !== "volunteer-register" && from.name !== 'volunteer-login' && from.name !== 'volunteer-project' && to.matched.some(record => record.meta.requireAuth)) {
 
-//     VueStore = JSON.parse(JSON.stringify(store.getters['volunteerStore/volunteers']));
-//     console.log(VueStore);
+    next({name: 'volunteer-login'});
 
-//     const userExists = VueStore.find(
-//       user => user.userName === to.params.userName
-//     );
-//     console.log(userExists);
-//     if (userExists == undefined) {
-//       next({name: 'volunteer-login'});
-//     }
-//     else{
-//       next();
-//     }
-//   }
-//   else{
-//     next();
-//   }
-// });
+  }
+  else{
+    next();
+  }
+});
 
 export default router;
