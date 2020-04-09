@@ -147,6 +147,7 @@
         dateObj.week1 = week1Arr;
         dateObj.week2 = week2Arr;
         dateObj.week3 = week3Arr;
+        dateObj.weekShowing = 1;
 
         this.volunteers.forEach(function(el){
           //make sure the work weeks stored for each volunteer match

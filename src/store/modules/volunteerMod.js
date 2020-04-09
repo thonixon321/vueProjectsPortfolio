@@ -63,9 +63,9 @@ export default(
 
       updateAvailability(state, volunteer) {
 
-        state.volunteers.forEach(function(el){
+        state.volunteers.forEach(function(el, index){
           if (el.userName == volunteer.userName) {
-            el = volunteer;
+            state.volunteers[index] = volunteer;
           }
         });
 
@@ -96,6 +96,7 @@ export default(
         state.dates.week_1 = dates.week1;
         state.dates.week_2 = dates.week2;
         state.dates.week_3 = dates.week3;
+        state.dates.weekShowing = dates.weekShowing;
       }
 
     }

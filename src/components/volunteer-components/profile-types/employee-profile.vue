@@ -8,6 +8,7 @@
         <option :value='week2'>{{ week2 }}</option>
         <option :value='week3'>{{ week3 }}</option>
       </select>
+      <button @click="updateAvailability()" class='submitSchedule'>Submit</button>
       <transition name="slideLeft" mode="out-in">
 
         <div v-show="weekShow == 1" class='weekContainer weekContainer_1'>
@@ -16,8 +17,8 @@
             <hr>
             <div class='cardContent'>
               <div v-if="card.availability.jobDetails[0].time == ''" class='inner'>
-                <input v-model="card.availability.checked" type='checkbox' :name='`cb_${index}`' :id='`cb_${index}`'>
-                <label :for='`cb_${index}`'>
+                <input v-model="card.availability.checked" type='checkbox' :name='`cb_${userName}_${card.day}`' :id='`cb_${userName}_${card.day}`'>
+                <label :for='`cb_${userName}_${card.day}`'>
                   <svg
                     xmlns:dc="http://purl.org/dc/elements/1.1/"
                     xmlns:cc="http://creativecommons.org/ns#"
@@ -88,8 +89,8 @@
             <hr>
             <div class='cardContent'>
               <div v-if="card.availability.jobDetails[0].time == ''" class='inner'>
-                <input v-model="card.availability.checked" type='checkbox' :name='`cb_${card.day}`' :id='`cb_${card.day}`'>
-                <label :for='`cb_${card.day}`'>
+                <input v-model="card.availability.checked" type='checkbox' :name='`cb_${userName}_${card.day}`' :id='`cb_${userName}_${card.day}`'>
+                <label :for='`cb_${userName}_${card.day}`'>
                   <svg
                     xmlns:dc="http://purl.org/dc/elements/1.1/"
                     xmlns:cc="http://creativecommons.org/ns#"
@@ -160,8 +161,8 @@
             <hr>
             <div class='cardContent'>
               <div v-if="card.availability.jobDetails[0].time == ''" class='inner'>
-                <input v-model="card.availability.checked" type='checkbox' :name='`cb_${card.day}`' :id='`cb_${card.day}`'>
-                <label :for='`cb_${card.day}`'>
+                <input v-model="card.availability.checked" type='checkbox' :name='`cb_${userName}_${card.day}`' :id='`cb_${userName}_${card.day}`'>
+                <label :for='`cb_${userName}_${card.day}`'>
                   <svg
                     xmlns:dc="http://purl.org/dc/elements/1.1/"
                     xmlns:cc="http://creativecommons.org/ns#"
@@ -224,7 +225,6 @@
         </div>
 
       </transition>
-      <button @click="updateAvailability()" class='submitSchedule'>Submit</button>
     </div>
   </div>
 </template>
@@ -243,7 +243,7 @@
         componentLoaded: false,
         weekShow: 1,
         dates: this.$store.state.volunteerStore.dates,
-        volunteers: this.$store.state.volunteerStore.volunteers,
+        volunteers: '',
         daysOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
       }
     },
@@ -316,6 +316,7 @@
 
 
       updateAvailability() {
+        console.log(this.userInfo);
         this.callUpdateAvailability(this.userInfo);
 
         this.$emit('savedChanges');
@@ -333,6 +334,9 @@
 
 
     mounted: function() {
+      var locallyStored = JSON.parse(localStorage.getItem('volunteerStore'));
+
+      this.volunteers = locallyStored.volunteerStore.volunteers;
       this.userInfo = '';
       this.componentLoaded = true;
       this.updateUserInfo();
@@ -366,6 +370,10 @@ hr{
   width: 100%;
 }
 
+h3 {
+  padding-left: 1em;
+}
+
 .employeeProfileContainer{
   position: relative;
   width: inherit;
@@ -376,10 +384,8 @@ select {
 }
 .relativeSection {
   position: relative;
-  width: 100%;
-  height: 47%;
-  top: 24%;
-  left: 0%;
+  top: 14em;
+  left: 4em;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -388,22 +394,25 @@ select {
 .weekContainer {
   display: flex;
   position: absolute;
-  top: 5.26em;
-  left: 2%;
+  top: 9.26em;
   width: 100%;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  width: 100%;
+  height: 33em;
 }
 .workDayCard {
   display: flex;
   flex-direction: column;
   border: 1px blanchedalmond solid;
-  padding: 1em;
   margin: 1em;
-  height: 20em;
-  width: 12%;
+  height: 60%;
+  width: 14em;
+  overflow: hidden;
 }
 .cardContent{
   height: 100%;
-  width: 100%;
+  width: 13.85em;
   overflow: auto;
   overflow-x: hidden;
 }
@@ -433,6 +442,7 @@ input[type=checkbox] {
 label {
   cursor: pointer;
   font-size: .8em;
+  margin-right: 1.92em;
 }
 
 svg {
@@ -462,22 +472,24 @@ input[type=checkbox]:checked + label .check {
 }
 
 .jobsDisplay {
-  border: 1px blanchedalmond solid;
-  padding: .5em 1.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: 1px blanchedalmond solid;
 }
+
 
 .submitSchedule {
   position: relative;
-  top: 19em;
+  top: .81em;
   font-size: 1.2em;
   border: 1px blanchedalmond solid;
-  padding: .5em 1em;
-}
-
-.submitSchedule:hover {
   background: blanchedalmond;
   color: rgb(36, 34, 34);
+  padding: .25em 1em;
+  border-radius: 4px;
 }
+
 
 @keyframes showActiveRight {
     0% {

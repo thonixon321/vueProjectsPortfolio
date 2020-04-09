@@ -1,7 +1,7 @@
 <template>
   <div class='weekContainer'>
     <div class='workDayCard' v-for="(card, index) in availability" :key="index">
-      <p>{{daysOfWeek[index]}} - {{card.day}}</p>
+      <p class="cardHeader">{{daysOfWeek[index]}} - {{card.day}}</p>
       <hr>
       <div class='cardContent'>
         <div class="availableCard" v-if="card.availability.checked">
@@ -17,19 +17,25 @@
               <input type='text' v-model="job.name" :id='`jobName_${weekNum}_${volunteer.userName}_${index}_${innerIndex}`'>
               <label :for='`jobCourse_${weekNum}_${volunteer.userName}_${index}_${innerIndex}`'>Course:</label>
               <input type='text' v-model="job.course" :id='`jobCourse_${weekNum}_${volunteer.userName}_${index}_${innerIndex}`'>
-              <button @click="assignJob(job, card.availability.jobDetails, innerIndex)" class='submitAssign'>Submit</button>
-              <button @click="cancelAssign(outerIndex, index, weekNum, job, card.availability.jobDetails, innerIndex)" class='cancelAssign'>Cancel</button>
+              <div class="buttonContainer">
+                <button @click="assignJob(job, card.availability.jobDetails, innerIndex)" class='submitAssign'>Submit</button>
+                <button @click="cancelAssign(outerIndex, index, weekNum, job, card.availability.jobDetails, innerIndex)" class='cancelAssign'>Cancel</button>
+              </div>
             </div>
-            <div v-else-if="job.time !== '' && job.edit == false" class='assignSummary'>
-              <div>Time: {{job.time}} </div>
-              <div>Group Name: {{job.name}}</div>
-              <div>Course: {{job.course}}</div>
-              <button @click="job.edit = true" class='editAssign'>Edit</button>
-              <button @click="deleteJob(innerIndex, card.availability.jobDetails)" class='deleteAssign'>Delete</button>
+            <div v-else-if="job.time !== '' && job.edit == false" class="jobSummary">
+              <div class='assignSummary'>
+                <div>{{job.time}} </div>
+                <div>{{job.name}}</div>
+                <div>{{job.course}}</div>
+              </div>
+              <div class="buttonContainer">
+                <button @click="job.edit = true" class='editAssign'>Edit</button>
+                <button @click="deleteJob(innerIndex, card.availability.jobDetails)" class='deleteAssign'>Delete</button>
+              </div>
             </div>
           </div>
         </div>
-        <div v-else>Not Available</div>
+        <div class="nonAvail" v-else>Not Available</div>
       </div>
     </div>
   </div>
@@ -37,7 +43,7 @@
 
 <script>
 
-  import { mapGetters, mapActions } from 'vuex';
+  import { mapActions } from 'vuex';
 
   export default {
 
@@ -54,9 +60,6 @@
 
 
     computed: {
-      ...mapGetters({
-        volunteers: 'volunteerStore/volunteers',
-      }),
 
     },
 
@@ -65,6 +68,7 @@
     props: {
       availability: Array,
       volunteer: Object,
+      volunteers: Array,
       outerIndex: Number,
       weekNum: String
     },
@@ -93,6 +97,7 @@
 
       deleteJob(index, jobArray) {
         jobArray.splice(index, 1);
+        this.callLoadVolunteers(this.volunteers);
       },
 
       cancelAssign(outerIndex, index, weekNum, job, jobArray, innerIndex) {
@@ -127,21 +132,37 @@
 <style scoped>
 hr{
   width: 100%;
+  margin-bottom: .82em;
+  color: black;
 }
 .weekContainer {
   position: absolute;
   display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
   width: 100%;
+  height: 33em;
+  overflow: auto;
+  overflow-x: hidden;
+  border-top: 1px black solid;
+  margin-top: 1em;
+  padding: 0em .51em;
 }
 .workDayCard {
   display: flex;
   flex-direction: column;
   border: 1px black solid;
+  border-radius: 4px;
   padding: .21em;
-  margin: 1em .52em;
-  height: 27em;
-  width: 14%;
+  margin: 1em .72em;
+  height: 16em;
+  width: 14em;
   font-size: .9em;
+}
+.cardHeader {
+  font-size: 1.2em;
+  font-weight: 700;
+  margin: 0.42em 0 0 0.2em;
 }
 .cardContent{
   display: flex;
@@ -151,30 +172,74 @@ hr{
   overflow-x: hidden;
 }
 
-.availableCard, .assignAvailable {
+.availableCard, .assignAvailable, .assignSummary {
   display: flex;
   flex-direction: column;
 }
 
-.assignDetails {
+.availableCard {
+  width: 95%;
+}
+
+.jobSummary {
+  background: rgba(248, 254, 225, 0.91);
   margin-top: .5em;
+  border: 1px black solid;
+  border-radius: 4px;
+}
+
+.assignSummary {
+  margin-top: .32em;
+  align-items: center;
+}
+
+.assignDetails {
+  background: rgba(248, 254, 225, 0.91);
+  margin-top: .95em;
+  margin-bottom: .95em;
+  border: 1px black solid;
+  border-radius: 4px;
+  padding: .3em;
+  overflow: hidden;
+}
+
+.assignDetails input {
+  width: 98%;
+  border: 1px black solid;
+  border-radius: 4px;
+  padding: .3em;
+  margin: .41em 0em;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 .32em 0;
 }
 
 .availableCard button {
-  background: transparent;
+  background: rgba(248, 254, 225, 0.91);
   border: 1px black solid;
   padding: .2em .5em;
   color: black;
-  margin-top: .3em;
+  margin: .33em;
+  border-radius: 4px;
+  width: 43%;
 }
 
 .availableCard button.assignButton {
-  margin-top: .83em;
+  margin: 0.95em 0 .95em 0;
+  width: 100%;
 }
 
 .availableCard button:hover {
-  background: black;
+  background: rgb(41, 78, 180);
   color: blanchedalmond;
+  border-color: rgb(41, 78, 180);
+}
+
+.nonAvail {
+  margin-top: .95em;
 }
 
 </style>
